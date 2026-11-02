@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11111b">
+  <meta name="description" content="NotifyMe — centrum Twoich powiadomień">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <title>NotifyMe</title>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">N</span><span>Notify<span class="purple">Me</span></span></div>
+      <div class="nav-label">MENU</div>
+      <button class="nav active" data-view="home">◈ <span>Przegląd</span></button>
+      <button class="nav" data-view="sources">◎ <span>Źródła</span></button>
+      <button class="nav" data-view="history">◷ <span>Historia</span></button>
+      <button class="nav" data-view="settings">⚙ <span>Ustawienia</span></button>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Panel lokalny</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">TWOJE CENTRUM POWIADOMIEŃ</div><h1 id="page-title">Przegląd</h1></div>
+        <div class="avatar">N</div>
+      </header>
+
+      <section class="view" id="home">
+        <div class="welcome card">
+          <div><div class="eyebrow">WITAJ W NOTIFYME</div><h2>Nic ważnego Ci nie umknie<span class="purple">.</span></h2>
+          <p>Połącz swoje źródła i zbieraj najważniejsze alerty w jednym miejscu.</p></div>
+          <div class="bell-art">♢</div>
+        </div>
+        <div class="stats">
+          <div class="stat card"><span>ŹRÓDŁA</span><strong id="source-count">0</strong><small>skonfigurowane</small></div>
+          <div class="stat card"><span>POWIADOMIENIA</span><strong id="notification-count">0</strong><small>w tej sesji</small></div>
+          <div class="stat card"><span>STATUS</span><strong class="status-text">Gotowy</strong><small>oczekuje na konfigurację</small></div>
+        </div>
+        <div class="section-head"><div><div class="eyebrow">OSTATNIE AKTYWNOŚCI</div><h3>Ostatnie powiadomienia</h3></div><button class="text-btn" data-goto="history">Zobacz historię →</button></div>
+        <div class="card feed" id="recent-feed"><div class="empty"><div class="empty-icon">♧</div><b>Tu pojawią się Twoje alerty</b><p>Na razie nie ma żadnych powiadomień.</p></div></div>
+      </section>
+
+      <section class="view hidden" id="sources">
+        <div class="section-head"><div><div class="eyebrow">INTEGRACJE</div><h3>Twoje źródła</h3><p class="muted">Wybierz, skąd NotifyMe ma pobierać zdarzenia.</p></div></div>
+        <div class="source-grid">
+          <article class="source card"><div class="source-logo discord">◉</div><div class="source-info"><h3>Discord</h3><p>Alerty z serwerów, kanałów i wybranych zdarzeń.</p><span class="tag">Wymaga konfiguracji bota</span></div><button class="outline" data-config="discord">Konfiguruj</button></article>
+          <article class="source card"><div class="source-logo web">⌘</div><div class="source-info"><h3>Strony internetowe</h3><p>Monitorowanie wybranych stron i zmian.</p><span class="tag">Do skonfigurowania</span></div><button class="outline" data-config="web">Konfiguruj</button></article>
+          <article class="source card"><div class="source-logo mail">✉</div><div class="source-info"><h3>E-mail</h3><p>Powiadomienia o nowych wiadomościach przez wspierane integracje.</p><span class="tag">Do skonfigurowania</span></div><button class="outline" data-config="email">Konfiguruj</button></article>
+          <article class="source card"><div class="source-logo custom">＋</div><div class="source-info"><h3>Własne alerty</h3><p>Dodawaj zdarzenia przez bezpieczny webhook.</p><span class="tag">Webhook</span></div><button class="outline" data-config="webhook">Konfiguruj</button></article>
+        </div>
+        <div class="notice"><b>Ważne:</b> to jest startowy panel. Integracje wymagają jeszcze bezpiecznego serwera. Nie wpisuj tutaj hasła Discorda ani tokenu swojego konta.</div>
+      </section>
+
+      <section class="view hidden" id="history">
+        <div class="section-head"><div><div class="eyebrow">ARCHIWUM</div><h3>Historia powiadomień</h3></div><button class="outline" id="clear-history">Wyczyść historię</button></div>
+        <div class="card feed" id="history-feed"><div class="empty"><div class="empty-icon">◷</div><b>Brak zapisanych powiadomień</b><p>Nowe alerty pojawią się tutaj.</p></div></div>
+      </section>
+
+      <section class="view hidden" id="settings">
+        <div class="section-head"><div><div class="eyebrow">PERSONALIZACJA</div><h3>Ustawienia</h3><p class="muted">Dostosuj sposób działania panelu.</p></div></div>
+        <div class="card settings-card">
+          <div class="setting-row"><div><b>Powiadomienia przeglądarki</b><p>Wyświetlaj powiadomienia na tym urządzeniu.</p></div><button class="primary" id="enable-push">Włącz</button></div>
+          <div class="setting-row"><div><b>Tryb demonstracyjny</b><p>Dodaj przykładowy alert, aby zobaczyć, jak działa panel.</p></div><button class="outline" id="demo-alert">Wyślij test</button></div>
+          <div class="setting-row"><div><b>Instalacja aplikacji</b><p>Dodaj NotifyMe do ekranu głównego, jeśli przeglądarka obsługuje instalację.</p></div><button class="outline" id="install-app" disabled>Instaluj</button></div>
+        </div>
+        <div class="notice">Powiadomienia przeglądarki wymagają zgody użytkownika i bezpiecznego połączenia HTTPS. Na iPhonie powiadomienia web push dla aplikacji internetowych wymagają dodania jej do ekranu początkowego.</div>
+      </section>
+      <footer>NotifyMe <span>•</span> Wersja startowa 0.1</footer>
+    </main>
+  </div>
+
+  <dialog id="config-dialog">
+    <form method="dialog" class="dialog-inner">
+      <button class="close" aria-label="Zamknij">×</button>
+      <div class="eyebrow">KONFIGURACJA ŹRÓDŁA</div><h2 id="dialog-title">Integracja</h2>
+      <p id="dialog-copy" class="muted"></p>
+      <div class="notice">Na tym etapie przygotowaliśmy miejsce na integrację. W następnym kroku podłączymy ją przez bezpieczny backend. Nigdy nie udostępniaj tokenów ani haseł w publicznym kodzie strony.</div>
+      <button class="primary full">Rozumiem</button>
+    </form>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>

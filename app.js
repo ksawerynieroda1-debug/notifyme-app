@@ -1,0 +1,18 @@
+const views=[...document.querySelectorAll(".view")], title=document.getElementById("page-title");
+const names={home:"Przegląd",sources:"Źródła",history:"Historia",settings:"Ustawienia"};
+let alerts=JSON.parse(localStorage.getItem("notifyme-alerts")||"[]");
+function showView(id){views.forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.view===id));title.textContent=names[id]||"NotifyMe"}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.goto)));
+function render(){document.getElementById("notification-count").textContent=alerts.length;document.getElementById("recent-feed").innerHTML=feedHTML(alerts.slice(0,4));document.getElementById("history-feed").innerHTML=feedHTML(alerts)}
+function feedHTML(items){if(!items.length)return '<div class="empty"><div class="empty-icon">◷</div><b>Brak powiadomień</b><p>Nowe alerty pojawią się tutaj.</p></div>';return items.map(a=>`<div class="setting-row"><div><b>${escapeHTML(a.title)}</b><p>${escapeHTML(a.body)}</p></div><small class="muted">${new Date(a.time).toLocaleString("pl-PL")}</small></div>`).join("")}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function addAlert(title,body){alerts.unshift({title,body,time:Date.now()});localStorage.setItem("notifyme-alerts",JSON.stringify(alerts));render();if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body,icon:"icon.svg"})}
+document.getElementById("demo-alert").addEventListener("click",()=>addAlert("NotifyMe — test powiadomienia","Świetnie! Panel NotifyMe działa poprawnie."));
+document.getElementById("clear-history").addEventListener("click",()=>{alerts=[];localStorage.removeItem("notifyme-alerts");render()});
+document.getElementById("enable-push").addEventListener("click",async()=>{if(!("Notification"in window)){alert("Ta przeglądarka nie obsługuje powiadomień.");return}const p=await Notification.requestPermission();alert(p==="granted"?"Zgoda włączona. To lokalny test powiadomień; zdalne alerty wymagają jeszcze serwera.":"Nie przyznano zgody na powiadomienia.")});
+const dialog=document.getElementById("config-dialog");const configs={discord:["Discord","Powiadomienia z serwerów Discord można podłączyć przez oficjalnego bota i zdarzenia, do których bot ma uprawnienia. Prywatnych wiadomości z Twojego konta nie będziemy odczytywać."],web:["Strony internetowe","Wybierzemy adresy stron i bezpieczny sposób sprawdzania zmian."],email:["E-mail","Integrację poczty podłączymy przez oficjalny mechanizm logowania dostawcy, bez podawania hasła w panelu."],webhook:["Własne webhooki","Webhook pozwoli innym usługom wysyłać alerty do NotifyMe. Endpoint i sekret skonfigurujemy po stronie serwera."]};
+document.querySelectorAll("[data-config]").forEach(b=>b.addEventListener("click",()=>{const c=configs[b.dataset.config];document.getElementById("dialog-title").textContent=c[0];document.getElementById("dialog-copy").textContent=c[1];dialog.showModal()}));
+let installPrompt;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;document.getElementById("install-app").disabled=false});document.getElementById("install-app").addEventListener("click",async()=>{if(installPrompt){installPrompt.prompt();installPrompt=null}});
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+render();
